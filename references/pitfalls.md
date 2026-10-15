@@ -14,12 +14,15 @@
 | 多份 HKL | 明确来源，不按大小或最低 R 自动选择 |
 | 包导入失败 | 核对 Python ABI，不混用 Olex2 和其他解释器的二进制包 |
 | PLATON GUI 挂起 | 是当前构建/调用方式限制，不推广为 PLATON 普遍不能命令行运行 |
+| Olex2屏幕报错，根目录LST找不到 | 按本次任务的时间戳/调用日志找实际运行LST；旧版本可能在olex2/temp。读错误前后上下文和完整指令/续行，不认定上一行必是根因 |
 
 指令以 [SHELXL 官方手册](https://shelx.uni-goettingen.de/shelxl_html.php) 为准，尤其 LATT、SHEL、SIMU、ACTA、AFIX 和占有率。
 
 ## 实践经验
 
 按问题读取 [跨项目经验](practice-lessons.md)。历史候选和旧报告不是当前数据的默认结论。
+
+外部案例的核实与修正见[教程来源](tutorial-sources.md)：带σ的DFIX/SUMP是限制而非硬边界/严格等式；负PART、SOF与特殊位置须区别；警报/空腔/Flack不是自动诊断。原案例只有图片/视频时，先取得实际模型和输入再复现。
 
 ## 工具限制
 

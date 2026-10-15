@@ -14,6 +14,12 @@
 
 低透射率不当然错误，Tmin=Tmax 也不能只凭相等判错；核对定义、归一化和日志。未知用 `?`，不填看似真实的占位数值。
 
+## 组成、Z与温度
+
+Z是按所报化学式定义的每晶胞化学式单元数，不是“独立分子数”或不对称单元重复次数；Z′按同一化学式基准描述不对称单元内容，特殊位置可出现分数。GUI的Z′设置不是独立组成证据。结合位点多重性、化学占有率、反离子及溶剂核对UNIT、化学式、F000、式量与密度，原子行SOF不能直接相加当化学占有率。
+
+SHELXL TEMP使用摄氏度，CIF的实验温度使用K。核对实际温度和换算，不能把CIF的K值直接抄入TEMP；TEMP也影响默认H几何和初始U。参考[IUCr的Z定义](https://www.iucr.org/__data/iucr/cifdic_html/1/cif_core.dic/Icell_formula_units_Z.html)及[SHELXL手册](https://shelx.uni-goettingen.de/shelxl_html.php)。
+
 ## prepare
 
 需 Gemmi，仅处理一个明确结构 data block。
@@ -29,6 +35,8 @@
 在线报告绑定实际输入哈希、模式、日期。CIF-only 不等于结构因子验证；下载成功不等于验证成功；单次 Upload error 不能证明固定 100 KB 限制。
 PLAT964 要核对实际权重、CIF 和内嵌 RES，不能用“接近下一轮建议权重”替代一致性检查。
 VRF 写具体问题、证据位置、做过的对照、结果和局限；没有证据就待解决，不自动写“正常热运动”“真实氢键”“合成已知”“已解决”。
+
+常见警报及回复操作见[案例调查](checkcif-case-triage.md)；显式无序或掩膜的组成/依赖文件见[H、孪晶与溶剂案例](hydrogen-twin-solvent-cases.md)。
 
 依据：[IUCr checkCIF 模式](https://checkcif.iucr.org/)、
 [IUCr 数据要求](https://journals.iucr.org/e/services/cif/reqdata.html)。

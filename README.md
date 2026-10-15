@@ -20,6 +20,10 @@
 | 数据/帧/斑点选择、积分背景、标度、截止和异常观测 | [DIALS决策](references/dials-decisions.md) |
 | DIALS运行、映射/诊断、候选筛选和吸收分量脚本 | [工具说明](references/dials-tools.md) |
 | 化学、H、ADP、对称、无序、孪晶、构型和收敛 | [精修决策](references/refinement-decisions.md) |
+| 分裂、多组分、特殊位置与几何/ADP限制 | [无序与占有率](references/disorder-and-occupancy.md) |
+| 活泼H、孪晶输入、弥散溶剂及SQUEEZE依赖 | [案例分支](references/hydrogen-twin-solvent-cases.md) |
+| 具体checkCIF警报调查与证据回复 | [警报处理](references/checkcif-case-triage.md) |
+| 外部教程的来源、吸收范围和修正 | [教程说明](references/tutorial-sources.md) |
 | SHELXL运行、元数据、checkCIF和归档命令 | [命令模板](references/workflow-recipes.md) |
 | 多次实践的可迁移经验 | [实践经验](references/practice-lessons.md) |
 
@@ -34,4 +38,4 @@ python scripts/test_dials_helpers.py
 
 合成行为测试不联网，不产生科学结论。DIALS工具使用DIALS自带Python；吸收分量工具涉及内部API，须检查版本和分量乘积。正式结构图从Olex2/PLATON导出，未包含旧的简化绘图器。
 
-发布前核验范围见[VALIDATION.md](VALIDATION.md)。原创skill说明与脚本按MIT许可；外部程序及其文档遵循各自许可。
+发布前核验范围见[VALIDATION.md](VALIDATION.md)。本仓库的方法说明与脚本按MIT许可；外部程序、教程原文及媒体遵循各自许可。仅整理可迁移方法并引用来源，不分发教程原文或图片。

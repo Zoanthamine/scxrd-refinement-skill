@@ -22,7 +22,9 @@
 
 先确认元素/位置，再对适用非氢原子做各向异性处理，最后Add H后逐项检查。羟基、水、胺H结合差图和化学环境，氢生成器不能自动决定键级。无序写完整FVAR/PART/AFIX与互补占有率，检查相关性和组分互斥。
 
-restrains与constraints分开记录：SIMU/RIGU等是限制，EADP/EXYZ等是约束。按当前模型和手册选，不复制旧原子名、强度或占有率。使用合理的无序/孪晶/OMIT并非错误，也不能单为清警报全部删除。
+restraints与constraints分开记录：SIMU/RIGU等是限制，EADP/EXYZ等是约束。按当前模型和手册选，不复制旧原子名、强度或占有率。使用合理的无序/孪晶/OMIT并非错误，也不能单为清警报全部删除。
+
+分裂、三组分、负PART和特殊位置按[无序与占有率](disorder-and-occupancy.md)处理；质子转移、孪晶输入和SQUEEZE/mask按[案例分支](hydrogen-twin-solvent-cases.md)核查。先读所遇到的分支，无需遍历所有试验。
 
 ## 权重与采用判断
 
@@ -35,5 +37,7 @@ restrains与constraints分开记录：SIMU/RIGU等是限制，EADP/EXYZ等是约
 从唯一选定模型生成ACTA配套CIF/FCF，核对LIST/MERG/FMAP兼容。同步CELL/ZERR/波长/空间群、实际WGHT及嵌入INS/HKL。资料补充按来源，未知用`?`。
 
 完整checkCIF报告分辨元数据缺项、结构问题、数据质量和诊断提示。缺字段如实补；结构问题回模型；Rint问题回上游还原。报告绑定当前哈希，修改后再验证；A=0、下载成功和打包成功均不自动证明可发表。
+
+具体警报与回复证据结构见[checkCIF案例调查](checkcif-case-triage.md)。
 
 操作与指令核对 [SHELXL手册](https://shelx.uni-goettingen.de/shelxl_html.php)、[Olex2精修说明](https://www.olexsys.org/olex2/docs/tasks/tasks/structure-refinement/)。

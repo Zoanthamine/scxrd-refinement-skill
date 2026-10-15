@@ -12,12 +12,16 @@ description: 单晶 X 射线结构诊断与精修。按输入选择直接 SHELXL
 | 当前输入/问题 | 使用流程 | 按需读取 |
 |---|---|---|
 | 已有配套 INS/RES/HKL，处理化学、H、ADP、无序或构型 | 原样复现，直接进入 SHELXL/Olex2；无需 DIALS | [模型精修](references/refinement-decisions.md)、[操作命令](references/workflow-recipes.md) |
+| 分裂、互斥构象、多组分或穿过对称元素的无序 | 核对差密度、占有率/多重性与组分连接，再设计最简单模型 | [无序与占有率](references/disorder-and-occupancy.md) |
+| 活泼H/质子转移、孪晶线索或弥散溶剂 | 分别核查化学/氢键、孪晶类型/输入协议及空腔贡献 | [H、孪晶与溶剂案例](references/hydrogen-twin-solvent-cases.md) |
 | 有原始帧，需重还原或解释高 Rint、索引/积分异常 | 检查格式与仪器几何后启用 DIALS | [还原决策](references/dials-decisions.md)、[操作顺序](references/dials-to-olex2.md)、[脚本](references/dials-tools.md) |
 | 只有积分数据 .expt/.refl | 从基底核查/标度进入，不重复选点积分 | [还原决策](references/dials-decisions.md)、[脚本](references/dials-tools.md) |
-| CIF/FCF 或报告不配套、实验字段缺失 | 先确认当前模型/数据版本，再验证和交付 | [元数据](references/cif-metadata.md)、[操作命令](references/workflow-recipes.md) |
+| CIF/FCF 或报告不配套、实验字段缺失、需调查警报或写回复 | 先确认当前模型/数据版本，再按警报对象核查和交付 | [警报调查与回复](references/checkcif-case-triage.md)、[元数据](references/cif-metadata.md)、[操作命令](references/workflow-recipes.md) |
 | 历史模型不复现、结论冲突或拟借鉴旧方案 | 查当前文件与失败分支，不沿用旧最小 R 模型 | [实践经验](references/practice-lessons.md)、[排错](references/pitfalls.md) |
 
 DIALS 是可选分支，不是所有精修的前置步骤。没有原始帧时明确不能验证的积分、晶胞和空间群问题；CIF 标签修改不能代替重新还原。
+
+借鉴外部教程时，按[教程来源与适用边界](references/tutorial-sources.md)区分文字、图像/视频索引及已核实方法；历史案例的原子名、比例和参数不能自动输入当前晶体。
 
 ## 建立基线
 
