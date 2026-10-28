@@ -18,6 +18,7 @@
 """
 import os, re, sys, shutil, hashlib, argparse, zipfile, json
 from datetime import datetime
+from pathlib import Path
 
 SUB = {'upload': '01_upload', 'validation': '02_validation',
        'records': '03_refinement_records', 'figures': '04_figures',
@@ -91,6 +92,7 @@ def main():
         ap.add_argument('--' + k)
     ap.add_argument('--checkcif', help='checkCIF 报告（html）')
     ap.add_argument('--figures', nargs='*', default=[])
+    ap.add_argument('--support', nargs='*', default=[], help='Actual FAB/include/method dependency files')
     ap.add_argument('--history', help='精修历程 md')
     ap.add_argument('--formula', default='')
     ap.add_argument('--notes', help='额外说明文本文件')
@@ -105,7 +107,7 @@ def main():
         path = getattr(a,key)
         if path and not os.path.isfile(path):
             raise SystemExit(f'Missing supplied {key}: {path}')
-    for path in a.figures:
+    for path in a.figures + a.support:
         if not os.path.isfile(path):
             raise SystemExit(f'Missing figure: {path}')
     for s in SUB.values():
@@ -137,6 +139,11 @@ def main():
     for i, f in enumerate(a.figures or [], 1):
         if f and os.path.exists(f):
             files.append(put(f, 'figures', os.path.basename(f)))
+    for path in a.support:
+        support_name = f'{N}.fab' if Path(path).suffix.lower() == '.fab' else os.path.basename(path)
+        if os.path.exists(os.path.join(a.outdir, SUB['records'], support_name)):
+            raise SystemExit(f'Support basename collision: {support_name}')
+        files.append(put(path, 'records', support_name))
     files.append(put(a.history, 'docs', 'refinement_history.md'))
     files.append(put(a.notes, 'docs', 'notes.md'))
     files = [f for f in files if f]

@@ -12,10 +12,25 @@
 
 不自动安装或修改DIALS/SHELXL/Olex2，也不内置这些程序。路径与所有科学设置来自当前样品，详细依赖及跨平台用法见[工具说明](references/dials-tools.md)。
 
+## 解结构与交付工具
+
+新增只读输入盘点、RDKit 配体拓扑/参考构象、交付基本文件/ABIN/include/哈希/ZIP 检查。方法整合自 solve-single-crystal 的问题处理思路，脚本独立实现；具体来源与修正见[整合说明](references/integration-provenance.md)。不要求同时安装该技能。
+
+```text
+python scripts/inventory_crystal_input.py INPUT_DIR_OR_ZIP
+python scripts/prepare_ligand.py ligand.mol reference.mol --report ligand.json
+python scripts/validate_crystal_package.py DELIVERY_DIR --basename sample
+```
+
+配体工具需要 RDKit，单构象优化仅是参考几何；其余两个新工具只需 Python 标准库。已配置统一科研环境的本机读[运行入口](references/local-runtime.md)，其他环境继续使用显式参数，不包含私人路径。
+
 ## 按需参考
 
 | 内容 | 入口 |
 |---|---|
+| 输入证据、SHELXT 初始解和配体拓扑 | [解结构与配体](references/solution-and-ligand.md) |
+| 孪晶律调查、数据范围和 PLATON/FCF 兼容 | [孪晶调查](references/twin-investigation.md) |
+| 交付依赖、哈希、ZIP 及包内重现 | [交付核查](references/package-audit.md) |
 | 完整16步：原始帧→选点→索引→几何→积分→标度→Olex2→验证归档 | [操作流程](references/dials-to-olex2.md) |
 | 数据/帧/斑点选择、积分背景、标度、截止和异常观测 | [DIALS决策](references/dials-decisions.md) |
 | DIALS运行、映射/诊断、候选筛选和吸收分量脚本 | [工具说明](references/dials-tools.md) |
@@ -34,6 +49,7 @@
 ```text
 python scripts/test_regressions.py
 python scripts/test_dials_helpers.py
+python scripts/test_solution_helpers.py
 ```
 
 合成行为测试不联网，不产生科学结论。DIALS工具使用DIALS自带Python；吸收分量工具涉及内部API，须检查版本和分量乘积。正式结构图从Olex2/PLATON导出，未包含旧的简化绘图器。

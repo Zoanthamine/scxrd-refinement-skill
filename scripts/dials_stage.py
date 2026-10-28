@@ -83,10 +83,27 @@ def run_stage(command, out, inputs=(), expected=(), timeout=None, dry_run=False)
     return status
 
 
+def resolve_executable(program, dials_bin=None):
+    """Explicit directory > DIALS_BIN > PATH; invalid configuration is an error."""
+    name = 'dials.' + program + ('.exe' if os.name == 'nt' else '')
+    directory = dials_bin if dials_bin is not None else os.environ.get('DIALS_BIN')
+    if directory:
+        executable = Path(directory).expanduser() / name
+        if not executable.is_file():
+            raise FileNotFoundError(f'Configured DIALS launcher is missing: {executable}')
+    else:
+        found = shutil.which(name)
+        if not found or not Path(found).is_file():
+            raise FileNotFoundError(
+                f'Cannot locate {name}; specify --dials-bin, DIALS_BIN, or activate DIALS')
+        executable = Path(found)
+    return executable.resolve()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--program", required=True, choices=sorted(PROGRAMS))
-    parser.add_argument("--dials-bin", type=Path, help="Directory containing DIALS launchers")
+    parser.add_argument("--dials-bin", type=Path, help="DIALS launcher directory; overrides DIALS_BIN and PATH")
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--input", action="append", default=[], help="Explicit provenance file; repeat")
     parser.add_argument("--expect", action="append", default=[], help="Relative output filename; repeat")
@@ -94,10 +111,10 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
-    name = "dials." + args.program + (".exe" if os.name == "nt" else "")
-    executable = str(args.dials_bin / name) if args.dials_bin else shutil.which(name)
-    if not executable or not Path(executable).is_file():
-        parser.error(f"Cannot locate {name}; activate DIALS or specify --dials-bin")
+    try:
+        executable = resolve_executable(args.program, args.dials_bin)
+    except FileNotFoundError as exc:
+        parser.error(str(exc))
     arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
     command = [str(Path(executable).resolve()), *expand_arguments(arguments)]
     status = run_stage(command, args.out, args.input, args.expect, args.timeout, args.dry_run)

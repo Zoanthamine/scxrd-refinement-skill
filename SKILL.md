@@ -1,16 +1,23 @@
 ---
 name: scxrd-refinement
-description: 单晶 X 射线结构诊断与精修。按输入选择直接 SHELXL/Olex2 精修，或用 DIALS 处理原始帧、选点、索引、积分和标度；辅助 CIF/FCF 与 checkCIF 核验和可追溯交付。
+description: 单晶 X 射线数据诊断、SHELXT 解结构与 SHELXL/Olex2 精修；按需从原始帧启用 DIALS。提供输入分级、配体拓扑、孪晶调查及 CIF/FCF、依赖和交付核查。
 ---
 
 # 单晶诊断与精修
 
 目标是得到有证据支持、可复现的结构模型与配套数据；警报和 R 值用于发现问题，不作为自动删数据或决定空间群的目标函数。
 
+## 本机运行入口
+
+本机已配置统一科研环境时，先读[本机运行与工具分工](references/local-runtime.md)：普通辅助脚本走 science，依赖 DIALS/cctbx/dxtbx 的脚本走 dials；有效程序路径只从统一环境配置读取。其他机器使用已验证的独立环境。
+
 ## 先选择入口
 
 | 当前输入/问题 | 使用流程 | 按需读取 |
 |---|---|---|
+| 只有 CIF/RES，没有配套强度 | 做模型/文件诊断，先找回强度来源；取得强度后再实验精修 | [输入盘点](references/solution-and-ligand.md) |
+| 待解结构或配体拓扑不清 | 盘点输入，按消光/化学建立 SHELXT 候选；配体单独核对 | [解结构与配体](references/solution-and-ligand.md) |
+| 需调查孪晶律、HKLF 协议或 PLATON/FCF 兼容 | 先确认数据支持范围，再建立有依据的候选和独立对照 | [孪晶调查](references/twin-investigation.md) |
 | 已有配套 INS/RES/HKL，处理化学、H、ADP、无序或构型 | 原样复现，直接进入 SHELXL/Olex2；无需 DIALS | [模型精修](references/refinement-decisions.md)、[操作命令](references/workflow-recipes.md) |
 | 分裂、互斥构象、多组分或穿过对称元素的无序 | 核对差密度、占有率/多重性与组分连接，再设计最简单模型 | [无序与占有率](references/disorder-and-occupancy.md) |
 | 活泼H/质子转移、孪晶线索或弥散溶剂 | 分别核查化学/氢键、孪晶类型/输入协议及空腔贡献 | [H、孪晶与溶剂案例](references/hydrogen-twin-solvent-cases.md) |
@@ -22,6 +29,8 @@ description: 单晶 X 射线结构诊断与精修。按输入选择直接 SHELXL
 DIALS 是可选分支，不是所有精修的前置步骤。没有原始帧时明确不能验证的积分、晶胞和空间群问题；CIF 标签修改不能代替重新还原。
 
 借鉴外部教程时，按[教程来源与适用边界](references/tutorial-sources.md)区分文字、图像/视频索引及已核实方法；历史案例的原子名、比例和参数不能自动输入当前晶体。
+
+整合来源及已修正的经验见[方法整合说明](references/integration-provenance.md)。
 
 ## 建立基线
 
@@ -49,7 +58,7 @@ DIALS 是可选分支，不是所有精修的前置步骤。没有原始帧时�
 - 外传当前样品 CIF/FCF 前确认授权，沿用本会话对相同样品/目的地的有效授权；其他本地工作先完成。完整 CIF+FCF 验证，CIF-only 明确未做结构因子核验。
 - 报告绑定实际提交文件哈希、日期和模式；请求成功不等于验证成功，修改后的 CIF 不继承旧报告。
 - 警报答复只写核实事实及局限；自动 VRF 是待填写骨架。A=0 不证明空间群、绝对构型或发表适用性。
-- 指定当前唯一候选、用途、采用理由、缺项和未解决问题。公开发布只包含通用方法/代码，当前研究数据与身份字段另行授权。
+- 指定当前唯一候选、用途、采用理由、缺项和未解决问题；按[交付核查](references/package-audit.md)检查 FAB/include、哈希、ZIP 与包内重现。公开发布只包含通用方法/代码，当前研究数据与身份字段另行授权。
 
 ## 工具选择
 
@@ -57,6 +66,9 @@ DIALS 是可选分支，不是所有精修的前置步骤。没有原始帧时�
 
 | 工具 | 用途/边界 |
 |---|---|
+| inventory_crystal_input.py | 目录/ZIP 只读盘点，区分 SFRM 校准、候选和未知；不据此宣布可重积分 |
+| prepare_ligand.py | RDKit 拓扑核对及显式参考构象；不替代衍射坐标 |
+| validate_crystal_package.py | 基本文件、显式依赖、哈希及 ZIP 完整性；不等于科学验证 |
 | dials_stage.py | 单阶段运行、输入哈希/命令/日志/状态；不自动决定参数或串行盲试 |
 | dials_audit.py | identifier/dataset/模板映射、几何及等价强度诊断；不自动删轮 |
 | dials_screen.py | 双重证据候选；默认仅报告，显式选择才输出未缩放筛选副本；须重标度 |

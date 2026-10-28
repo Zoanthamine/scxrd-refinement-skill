@@ -1,16 +1,50 @@
 """Offline behavioral tests with synthetic observations; no private data or network."""
 import importlib.util
 import json
+import os
+from unittest.mock import patch
 from pathlib import Path
 import sys
 import tempfile
 import unittest
 import numpy as np
-from dials_stage import expand_arguments, run_stage
+from dials_stage import expand_arguments, run_stage, resolve_executable
 from dials_screen import screen, map_candidates
 
 
 class DialsHelpersTests(unittest.TestCase):
+    def test_launcher_explicit_overrides_environment_and_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            explicit = root/'explicit'; explicit.mkdir()
+            configured = root/'configured'; configured.mkdir()
+            name = 'dials.report' + ('.exe' if os.name == 'nt' else '')
+            (explicit/name).write_text('explicit')
+            (configured/name).write_text('configured')
+            with patch.dict(os.environ, {'DIALS_BIN': str(configured)}), patch('dials_stage.shutil.which') as which:
+                self.assertEqual(resolve_executable('report', explicit), (explicit/name).resolve())
+                self.assertEqual(resolve_executable('report'), (configured/name).resolve())
+                which.assert_not_called()
+
+    def test_invalid_configuration_does_not_silently_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict(os.environ, {'DIALS_BIN': tmp}), patch('dials_stage.shutil.which') as which:
+                with self.assertRaises(FileNotFoundError):
+                    resolve_executable('report')
+                with self.assertRaises(FileNotFoundError):
+                    resolve_executable('report', Path(tmp)/'missing')
+                which.assert_not_called()
+
+    def test_launcher_path_fallback_and_missing_program(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            name = 'dials.report' + ('.exe' if os.name == 'nt' else '')
+            exe = Path(tmp)/name; exe.write_text('launcher')
+            with patch.dict(os.environ, {'DIALS_BIN': ''}), patch('dials_stage.shutil.which', return_value=str(exe)):
+                self.assertEqual(resolve_executable('report'), exe.resolve())
+            with patch.dict(os.environ, {'DIALS_BIN': ''}), patch('dials_stage.shutil.which', return_value=None):
+                with self.assertRaises(FileNotFoundError):
+                    resolve_executable('report')
+
     def test_joint_evidence_and_leave_dataset_out(self):
         # Two suspect measurements in dataset 0 cannot validate each other.
         datasets = np.array([0, 0, 1, 1, 2, 3, 4])

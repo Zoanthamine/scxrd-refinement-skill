@@ -4,7 +4,7 @@
 
 ## 1. 单阶段留痕运行
 
-`dials_stage.py`使用标准库，可由普通Python运行，实际DIALS程序需可执行。激活DIALS环境或显式`--dials-bin`指定启动器目录。输入使用绝对路径，输出参数使用新阶段中的相对文件名；PHIL中包含的文件路径由调用者明确写绝对路径。
+`dials_stage.py`使用标准库，可由普通Python运行，实际DIALS程序需可执行。激活DIALS环境，或通过`--dials-bin`/`DIALS_BIN`指定启动器目录；优先级为显式参数、环境变量、PATH，失效的显式配置会停止。本机统一入口见[运行说明](local-runtime.md)。输入使用绝对路径，输出参数使用新阶段中的相对文件名；PHIL中包含的文件路径由调用者明确写绝对路径。
 
 ```powershell
 $py = '<DIALS环境中的python>'
